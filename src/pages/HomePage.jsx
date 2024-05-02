@@ -1,8 +1,22 @@
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+
 const HomePage = () => {
+  const navigate = useNavigate();
   const isLogged = useSelector((state) => state.auth.isLogged);
-  return !isLogged ? (
-    <div>Welcome to mail client app. Please log in to continue.</div>
-  ) : <div>Welcome to the the app.</div>;
+
+  useEffect(() => {
+    if (!isLogged) {
+      navigate("/auth");
+    }
+  }, [isLogged]);
+
+  if (!isLogged) {
+    return null;
+  }
+
+  return <div>Welcome to the app.</div>;
 };
+
 export default HomePage;

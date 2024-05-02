@@ -1,15 +1,13 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { setLoggedStatus } from "../../store/auth-slice";
+import { resetAuth } from "../../store/auth-slice";
 const MainNavigation = () => {
   const navigate = useNavigate();
 
   const isLogged = useSelector((state) => state.auth.isLogged);
-
   const dispatch = useDispatch();
-
   const logoutHandler = () => {
-    dispatch(setLoggedStatus(false));
+    dispatch(resetAuth());
     navigate("/auth");
   };
 

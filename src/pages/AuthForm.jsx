@@ -1,7 +1,13 @@
 import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {useNavigate} from "react-router-dom"
-import { setUser, setLoading, setError, clearError, setLoggedStatus } from "../store/auth-slice";
+import { useNavigate } from "react-router-dom";
+import {
+  setUser,
+  setLoading,
+  setError,
+  clearError,
+  setLoggedStatus,
+} from "../store/auth-slice";
 import { auth } from "../firebase/firebaseConfig.jsx";
 import {
   createUserWithEmailAndPassword,
@@ -13,7 +19,7 @@ const AuthForm = () => {
   const confirmPasswordInputRef = useRef();
 
   const [isLogin, setIsLogin] = useState(true);
-  const navigate =  useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.auth.loading);
 
@@ -46,7 +52,7 @@ const AuthForm = () => {
           );
           dispatch(setLoggedStatus(true));
           dispatch(setUser(userCredential.user));
-          navigate("/")
+          navigate("/");
         } catch (error) {
           dispatch(setError(error.message));
         }
@@ -66,8 +72,9 @@ const AuthForm = () => {
           enteredEmail,
           enteredPassword
         );
-        dispatch(setUser(userCredential.user));
         dispatch(setLoggedStatus(true));
+        dispatch(setUser(userCredential.user, userCredential.accessToken));
+        console.log(userCredential.user);
         navigate("/");
       } catch (error) {
         dispatch(setError(error.message));
