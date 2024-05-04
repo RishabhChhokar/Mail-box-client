@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { resetAuth } from "../../store/auth-slice";
+
 const MainNavigation = () => {
   const navigate = useNavigate();
 
@@ -20,20 +21,23 @@ const MainNavigation = () => {
         <div>
           <ul className="navbar-nav ml-auto">
             {!isLogged && (
-              <li style={{height : "40px"}}>
+              <li style={{ height: "40px" }}>
                 <Link className="btn btn-primary" to="/auth">
                   Login
                 </Link>
               </li>
             )}
             {isLogged && (
-              <li className="nav-item">
+              <li style={{ display: "flex", alignItems: "center" }}>
                 <button
-                  className="btn btn-outline-danger"
+                  className="btn btn-outline-danger me-2"
                   onClick={logoutHandler}
                 >
                   Logout
                 </button>
+                <Link className="btn btn-primary" to="/send">
+                  Compose Mail
+                </Link>
               </li>
             )}
           </ul>

@@ -3,6 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import AuthForm from "./pages/AuthForm";
 import Layout from "./components/Layout/Layout";
 import HomePage from "./pages/HomePage";
+import Compose from "./components/Mail/Compose";
 const App = () => {
   return (
     <>
@@ -11,6 +12,7 @@ const App = () => {
           <Routes>
             <Route path="/auth" element={<AuthForm />} />
             <Route path="/" element={<HomePage/>} />
+            <Route path="send" element={<Compose/>} />
           </Routes>
         </Layout>
       </Router>
