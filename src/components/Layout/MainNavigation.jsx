@@ -38,6 +38,12 @@ const MainNavigation = () => {
                 <Link className="btn btn-primary" to="/send">
                   Compose Mail
                 </Link>
+                <Link className="btn btn-primary" to="/inbox">
+                  Inbox
+                </Link>
+                <Link className="btn btn-primary" to="/sentbox">
+                  Sentbox
+                </Link>
               </li>
             )}
           </ul>

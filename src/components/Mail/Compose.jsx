@@ -1,10 +1,11 @@
-import { useRef,useState } from "react";
-import { EditorState, convertToRaw} from "draft-js";
+import { useRef, useState } from "react";
+import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useSelector } from "react-redux";
 import { db } from "../../firebase/firebaseConfig";
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc } from "firebase/firestore";
+
 const Compose = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const emailRef = useRef(null);
@@ -21,7 +22,6 @@ const Compose = () => {
     }
     const contentState = editorState.getCurrentContent();
     const rawContent = convertToRaw(contentState);
-    console.log(rawContent)
     const email = {
       to: emailRef.current.value,
       subject: subRef.current.value,
@@ -30,8 +30,12 @@ const Compose = () => {
     };
 
     try {
-      await addDoc(collection(db, "sentEmails"), email);
+      await addDoc(collection(db, senderEmail + "_sentEmails"), email);
+      await addDoc(collection(db, email.to + "_receivedEmails"), email);
       console.log("Email sent successfully!");
+      emailRef.current.value = "";
+      subRef.current.value = "";
+      setEditorState(EditorState.createEmpty());
     } catch (error) {
       console.error("Error sending email: ", error);
     }

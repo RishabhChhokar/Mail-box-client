@@ -4,6 +4,8 @@ import AuthForm from "./pages/AuthForm";
 import Layout from "./components/Layout/Layout";
 import HomePage from "./pages/HomePage";
 import Compose from "./components/Mail/Compose";
+import SentBox from "./components/Mail/SentBox";
+import Inbox from "./components/Mail/Inbox";
 const App = () => {
   return (
     <>
@@ -11,8 +13,10 @@ const App = () => {
         <Layout>
           <Routes>
             <Route path="/auth" element={<AuthForm />} />
-            <Route path="/" element={<HomePage/>} />
-            <Route path="send" element={<Compose/>} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/send" element={<Compose />} />
+            <Route path="/sentbox" element={<SentBox />} />
+            <Route path="/inbox" element={<Inbox />} />
           </Routes>
         </Layout>
       </Router>
