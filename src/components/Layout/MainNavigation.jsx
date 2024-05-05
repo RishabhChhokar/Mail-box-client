@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { resetAuth } from "../../store/auth-slice";
+import UnreadEmails from "../Mail/UnreadEmails";
 
 const MainNavigation = () => {
   const navigate = useNavigate();
@@ -15,14 +16,39 @@ const MainNavigation = () => {
   return (
     <nav className="navbar bg-light">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
+        <Link
+          style={{
+            fontFamily: "Arial, Helvetica, sans-serif",
+            fontSize: "1.5rem",
+            color: "white",
+            margin: "0",
+            padding: "5px",
+            border: "2px solid black",
+            borderRadius: "50px",
+            background: "darkblue",
+          }}
+          className="navbar-brand"
+          to="/"
+        >
           MailBox Client
         </Link>
         <div>
           <ul className="navbar-nav ml-auto">
             {!isLogged && (
-              <li style={{ height: "40px" }}>
-                <Link className="btn btn-primary" to="/auth">
+              <li
+                style={{
+                  height: "40px",
+                }}
+              >
+                <Link
+                  style={{
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    border: "2px solid black",
+                    borderRadius: "50px",
+                  }}
+                  className="btn btn-primary"
+                  to="/auth"
+                >
                   Login
                 </Link>
               </li>
@@ -30,18 +56,50 @@ const MainNavigation = () => {
             {isLogged && (
               <li style={{ display: "flex", alignItems: "center" }}>
                 <button
+                  style={{
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    border: "2px solid black",
+                    borderRadius: "50px",
+                  }}
                   className="btn btn-outline-danger me-2"
                   onClick={logoutHandler}
                 >
                   Logout
                 </button>
-                <Link className="btn btn-primary" to="/send">
+                <Link
+                  style={{
+                    marginRight: "10px",
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    border: "2px solid black",
+                    borderRadius: "50px",
+                  }}
+                  className="btn btn-primary"
+                  to="/send"
+                >
                   Compose Mail
                 </Link>
-                <Link className="btn btn-primary" to="/inbox">
+                <Link
+                  style={{
+                    marginRight: "10px",
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    border: "2px solid black",
+                    borderRadius: "50px",
+                  }}
+                  className="btn btn-primary"
+                  to="/inbox"
+                >
                   Inbox
                 </Link>
-                <Link className="btn btn-primary" to="/sentbox">
+                  {isLogged && <UnreadEmails/>}
+                <Link
+                  style={{
+                    fontFamily: "Arial, Helvetica, sans-serif",
+                    border: "2px solid black",
+                    borderRadius: "50px",
+                  }}
+                  className="btn btn-primary"
+                  to="/sentbox"
+                >
                   Sentbox
                 </Link>
               </li>

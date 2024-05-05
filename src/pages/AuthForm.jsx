@@ -32,7 +32,7 @@ const AuthForm = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-
+    dispatch(setLoading(true));
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
@@ -93,7 +93,9 @@ const AuthForm = () => {
         style={{
           boxShadow: "0 1.4px 4px rgba(0, 0, 0, 0.2)",
           padding: "10px 10px",
-          borderRadius: "8px",
+          fontFamily: "Arial, Helvetica, sans-serif",
+          border: "2px solid black",
+          borderRadius: "20px",
         }}
       >
         {error && <p style={{ color: "red", textAlign: "start" }}>*{error}</p>}
@@ -154,19 +156,38 @@ const AuthForm = () => {
             )}
           </div>
           <div>
-            {!isLoading && (
-              <button className="btn btn-primary me-2">
+            {!isLoading ? (
+              <button
+                style={{
+                  fontFamily: "Arial, Helvetica, sans-serif",
+                  border: "2px solid black",
+                  borderRadius: "50px",
+                }}
+                className="btn btn-primary me-2"
+              >
                 {isLogin ? "Login" : "Create Account"}
               </button>
+            ) : (
+              <div className="d-flex justify-content-center">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
             )}
-            {isLoading && <p>Sending request...</p>}
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={switchAuthModeHandler}
-            >
-              {isLogin ? "Create new account" : "Have an account? Login"}
-            </button>
+            {!isLoading && (
+              <button
+                style={{
+                  fontFamily: "Arial, Helvetica, sans-serif",
+                  border: "2px solid black",
+                  borderRadius: "50px",
+                }}
+                type="button"
+                className="btn btn-secondary"
+                onClick={switchAuthModeHandler}
+              >
+                {isLogin ? "Create new account" : "Have an account? Login"}
+              </button>
+            )}
           </div>
         </form>
       </div>

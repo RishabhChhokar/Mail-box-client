@@ -27,6 +27,7 @@ const Compose = () => {
       subject: subRef.current.value,
       body: JSON.stringify(rawContent),
       sender: senderEmail,
+      read : false
     };
 
     try {
@@ -62,7 +63,15 @@ const Compose = () => {
         wrapperClassName="wrapper-class"
         editorClassName="editor-class"
       />
-      <button className="send-button" onClick={sendEmail}>
+      <button
+        style={{
+          fontFamily: "Arial, Helvetica, sans-serif",
+          border: "2px solid black",
+          borderRadius: "50px",
+        }}
+        className="send-button"
+        onClick={sendEmail}
+      >
         Send
       </button>
       <style>{`

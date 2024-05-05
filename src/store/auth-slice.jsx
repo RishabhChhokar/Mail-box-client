@@ -7,6 +7,7 @@ const initialState = {
   isLogged: localStorage.getItem("isLogged") === "true",
   token: localStorage.getItem("userToken") || null,
   userEmail: localStorage.getItem("userEmail") || null,
+  unreadEmails: parseInt(localStorage.getItem("unreadEmails")) || 0,
 };
 
 const authSlice = createSlice({
@@ -41,10 +42,16 @@ const authSlice = createSlice({
       state.isLogged = false;
       state.token = null;
       state.userEmail = null;
+      state.unreadEmails = 0;
 
       localStorage.removeItem("isLogged");
       localStorage.removeItem("userToken");
       localStorage.removeItem("userEmail");
+      localStorage.removeItem("unreadEmails");
+    },
+    updateUnreadEmails(state, action) {
+      state.unreadEmails = action.payload;
+      localStorage.setItem("unreadEmails", action.payload);
     },
   },
 });
@@ -56,5 +63,6 @@ export const {
   clearError,
   setLoggedStatus,
   resetAuth,
+  updateUnreadEmails,
 } = authSlice.actions;
 export default authSlice.reducer;
