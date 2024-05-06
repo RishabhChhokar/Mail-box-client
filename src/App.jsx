@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import Compose from "./components/Mail/Compose";
 import SentBox from "./components/Mail/SentBox";
 import Inbox from "./components/Mail/Inbox";
+import ForgetPassword from "./pages/ForgetPassword";
 const App = () => {
   return (
     <>
@@ -17,6 +18,7 @@ const App = () => {
             <Route path="/send" element={<Compose />} />
             <Route path="/sentbox" element={<SentBox />} />
             <Route path="/inbox" element={<Inbox />} />
+            <Route path="/forget-password" element={<ForgetPassword />} />
           </Routes>
         </Layout>
       </Router>

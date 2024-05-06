@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { db } from "../../firebase/firebaseConfig";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { useSelector } from "react-redux";
 import { ListGroup } from "react-bootstrap";
 import { convertFromRaw } from "draft-js";
@@ -24,26 +31,61 @@ const SentBox = () => {
     fetchEmails();
   }, [senderEmail]);
 
+  const deleteEmail = async (id) => {
+    const emailRef = doc(db, senderEmail + "_sentEmails", id);
+    await deleteDoc(emailRef);
+    refreshEmails();
+  };
+
+  const refreshEmails = async () => {
+    const q = query(
+      collection(db, senderEmail + "_sentEmails"),
+      where("sender", "==", senderEmail)
+    );
+    const querySnapshot = await getDocs(q);
+    setEmails(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
   return (
     <ListGroup>
-      {emails.map((email) => {
-        const contentState = convertFromRaw(JSON.parse(email.body));
-        const text = contentState.getPlainText();
+      {emails
+        .sort((a, b) => b.date - a.date) 
+        .map((email) => {
+          const contentState = convertFromRaw(JSON.parse(email.body));
+          const text = contentState.getPlainText();
 
-        return (
-          <ListGroup.Item key={email.id}>
-            <p>
-              <strong>To:</strong> {email.to}
-            </p>
-            <p>
-              <strong>Subject:</strong> {email.subject}
-            </p>
-            <p>
-              <strong>Body:</strong> {text}
-            </p>
-          </ListGroup.Item>
-        );
-      })}
+          return (
+            <ListGroup.Item key={email.id}>
+              <p>
+                <strong>To:</strong> {email.to}
+              </p>
+              <p>
+                <strong>Sent on:</strong>{" "}
+                {new Date(email.date).toLocaleString()}
+              </p>
+              <p>
+                <strong>Subject:</strong> {email.subject}
+              </p>
+              <p>
+                <strong>Body:</strong> {text}
+              </p>
+              <button
+                style={{
+                  fontFamily: "Arial, Helvetica, sans-serif",
+                  fontSize: "13px",
+                  border: "2px solid black",
+                  borderRadius: "50px",
+                  padding: "3px",
+                  marginLeft: "10px",
+                }}
+                className="btn btn-danger"
+                onClick={() => deleteEmail(email.id)}
+              >
+                🗑
+              </button>
+            </ListGroup.Item>
+          );
+        })}
     </ListGroup>
   );
 };

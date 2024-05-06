@@ -10,7 +10,7 @@ describe("UnreadEmails component", () => {
         <UnreadEmails />
       </Provider>
     );
-    const linkElement = screen.getByText(/Unread Emails:/i);
+    const linkElement = screen.getByText(/0/i);
     expect(linkElement).toBeTruthy();
   });
   it("renders zero unread email count", () => {
@@ -19,7 +19,7 @@ describe("UnreadEmails component", () => {
         <UnreadEmails />
       </Provider>
     );
-     const countElements = screen.getAllByText(/Unread Emails: 0/i);
+     const countElements = screen.getAllByText(/0/i);
      expect(countElements[0]).toBeTruthy();
   });
 });

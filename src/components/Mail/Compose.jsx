@@ -27,7 +27,8 @@ const Compose = () => {
       subject: subRef.current.value,
       body: JSON.stringify(rawContent),
       sender: senderEmail,
-      read : false
+      read: false,
+      date: new Date().getTime()
     };
 
     try {

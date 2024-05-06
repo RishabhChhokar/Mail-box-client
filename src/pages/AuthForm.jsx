@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {Link} from "react-router-dom"
 import {
   setUser,
   setLoading,
@@ -155,6 +156,28 @@ const AuthForm = () => {
               </div>
             )}
           </div>
+          {isLogin && (
+            <div
+              style={{
+                boxShadow: "0 1.4px 4px rgba(0, 0, 0, 0.2)",
+                padding: "2px",
+                fontFamily: "Arial, Helvetica, sans-serif",
+                border: "1px solid black",
+                borderRadius: "20px",
+                textAlign: "center",
+                marginBottom: "10px",
+                width : "100%"
+              }}
+              className="btn btn-warning"
+            >
+              <Link
+                style={{ color: "red", textDecoration: "none" }}
+                to="/forget-password"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+          )}
           <div>
             {!isLoading ? (
               <button

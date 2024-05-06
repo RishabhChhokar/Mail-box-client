@@ -5,9 +5,9 @@ import UnreadEmails from "../Mail/UnreadEmails";
 
 const MainNavigation = () => {
   const navigate = useNavigate();
-
   const isLogged = useSelector((state) => state.auth.isLogged);
   const dispatch = useDispatch();
+
   const logoutHandler = () => {
     dispatch(resetAuth());
     navigate("/auth");
@@ -85,12 +85,15 @@ const MainNavigation = () => {
                     border: "2px solid black",
                     borderRadius: "50px",
                   }}
-                  className="btn btn-primary"
                   to="/inbox"
+                  type="button"
+                  className="btn btn-primary position-relative"
                 >
                   Inbox
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <UnreadEmails />
+                  </span>
                 </Link>
-                  {isLogged && <UnreadEmails/>}
                 <Link
                   style={{
                     fontFamily: "Arial, Helvetica, sans-serif",

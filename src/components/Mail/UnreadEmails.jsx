@@ -23,20 +23,10 @@ const UnreadEmails = () => {
   }, [userEmail, dispatch]);
 
   return (
-    <div>
-      <h2
-        style={{
-          marginRight: "10px",
-          marginBottom : "0px",
-          fontFamily: "Arial, Helvetica, sans-serif",
-          border: "2px solid black",
-          borderRadius: "50px",
-        }}
-        className="btn btn-primary"
+      <
       >
-        Unread Emails: {unreadEmails}
-      </h2>
-    </div>
+        {unreadEmails}
+      </>
   );
 };
 
