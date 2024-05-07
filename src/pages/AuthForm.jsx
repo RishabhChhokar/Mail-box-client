@@ -1,31 +1,24 @@
 import { useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useSelector, useDispatch} from "react-redux";
+import useLogin from "../customHooks/AuthHooks/useLogin";
+import useSignUp from "../customHooks/AuthHooks/useSignUp";
 import {
-  setUser,
-  setLoading,
-  setError,
   clearError,
-  setLoggedStatus,
+  setError,
 } from "../store/auth-slice";
-import { auth } from "../firebase/firebaseConfig.jsx";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
 const AuthForm = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const confirmPasswordInputRef = useRef();
-
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.auth.loading);
-
   const error = useSelector((state) => state.auth.error);
-
+  const { login } = useLogin();
+  const { signup } = useSignUp();
+  const dispatch =  useDispatch()
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
     dispatch(clearError());
@@ -33,11 +26,12 @@ const AuthForm = () => {
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    dispatch(setLoading(true));
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
 
-    if (!isLogin) {
+    if (isLogin) {
+      login(enteredEmail, enteredPassword, navigate);
+    } else {
       const enteredPassword2 = confirmPasswordInputRef.current.value;
       if (
         enteredEmail &&
@@ -45,44 +39,13 @@ const AuthForm = () => {
         enteredPassword2 &&
         enteredPassword === enteredPassword2
       ) {
-        try {
-          const userCredential = await createUserWithEmailAndPassword(
-            auth,
-            enteredEmail,
-            enteredPassword
-          );
-          dispatch(setLoggedStatus(true));
-          dispatch(setUser(userCredential.user));
-          navigate("/");
-        } catch (error) {
-          dispatch(setError(error.message));
-        }
+        signup(enteredEmail, enteredPassword, navigate);
       } else if (enteredPassword !== enteredPassword2) {
         dispatch(setError("Passwords didn't match"));
-        console.log("Passwords didn't match");
-        return;
       } else {
         dispatch(setError("All Fields Are Required"));
-        console.log("All Fields Are Required");
-        return;
-      }
-    } else {
-      try {
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          enteredEmail,
-          enteredPassword
-        );
-        dispatch(setLoggedStatus(true));
-        dispatch(setUser(userCredential.user, userCredential.accessToken));
-        console.log(userCredential.user);
-        navigate("/");
-      } catch (error) {
-        dispatch(setError(error.message));
       }
     }
-
-    dispatch(setLoading(false));
   };
 
   return (
@@ -166,7 +129,7 @@ const AuthForm = () => {
                 borderRadius: "20px",
                 textAlign: "center",
                 marginBottom: "10px",
-                width : "100%"
+                width: "100%",
               }}
               className="btn btn-warning"
             >

@@ -40,7 +40,6 @@ const Inbox = () => {
       }));
       setEmails(newEmails);
 
-
       const unreadCount = newEmails.filter((email) => !email.read).length;
       dispatch(updateUnreadEmails(unreadCount));
     });
