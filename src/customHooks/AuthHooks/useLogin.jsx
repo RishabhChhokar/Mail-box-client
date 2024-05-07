@@ -4,8 +4,8 @@ import {
   setError,
   setLoggedStatus,
   setUser,
-} from "../store/auth-slice";
-import { auth } from "../firebase/firebaseConfig.jsx";
+} from "../../store/auth-slice";
+import { auth } from "../../firebase/firebaseConfig.jsx";
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 const useLogin = () => {
