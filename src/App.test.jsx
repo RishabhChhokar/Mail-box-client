@@ -1,13 +1,13 @@
 import { describe, it, expect } from "vitest";
-import UnreadEmails from "./components/Mail/UnreadEmails";
+import MainNavigation from "./components/Layout/MainNavigation"
 import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import store from "./store/main";
-describe("UnreadEmails component", () => {
+describe("MainNavigation component", () => {
   it("renders correctly", () => {
     render(
       <Provider store={store}>
-        <UnreadEmails />
+        <MainNavigation />
       </Provider>
     );
     const linkElement = screen.getByText(/0/i);
@@ -16,7 +16,7 @@ describe("UnreadEmails component", () => {
   it("renders zero unread email count", () => {
     render(
       <Provider store={store}>
-        <UnreadEmails />
+        <MainNavigation />
       </Provider>
     );
      const countElements = screen.getAllByText(/0/i);

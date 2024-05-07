@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import { db } from "../../firebase/firebaseConfig";
 import {
   collection,
-  getDocs,
   query,
   where,
+  onSnapshot,
   updateDoc,
   doc,
   deleteDoc,
 } from "firebase/firestore";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { ListGroup } from "react-bootstrap";
 import { convertFromRaw } from "draft-js";
-import { useDispatch } from "react-redux";
 import { updateUnreadEmails } from "../../store/auth-slice";
 
 const Inbox = () => {
@@ -21,43 +20,40 @@ const Inbox = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchEmails = async () => {
-      const q = query(
-        collection(db, userEmail + "_receivedEmails"),
-        where("to", "==", userEmail)
-      );
-      const querySnapshot = await getDocs(q);
-      setEmails(
-        querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-      );
-    };
+    const unsubscribe = listenToInboxChanges();
 
-    fetchEmails();
+    return () => {
+      unsubscribe();
+    };
   }, [userEmail]);
+
+  const listenToInboxChanges = () => {
+    const q = query(
+      collection(db, userEmail + "_receivedEmails"),
+      where("to", "==", userEmail)
+    );
+
+    return onSnapshot(q, (snapshot) => {
+      const newEmails = snapshot.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setEmails(newEmails);
+
+
+      const unreadCount = newEmails.filter((email) => !email.read).length;
+      dispatch(updateUnreadEmails(unreadCount));
+    });
+  };
 
   const markAsRead = async (id) => {
     const emailRef = doc(db, userEmail + "_receivedEmails", id);
     await updateDoc(emailRef, { read: true });
-    refreshEmails();
   };
 
   const deleteEmail = async (id) => {
     const emailRef = doc(db, userEmail + "_receivedEmails", id);
     await deleteDoc(emailRef);
-    await refreshEmails();
-  };
-
-  const refreshEmails = async () => {
-    const q = query(
-      collection(db, userEmail + "_receivedEmails"),
-      where("to", "==", userEmail)
-    );
-    const querySnapshot = await getDocs(q);
-    setEmails(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    const unreadCount = querySnapshot.docs.filter(
-      (doc) => !doc.data().read
-    ).length;
-    dispatch(updateUnreadEmails(unreadCount));
   };
 
   return (
@@ -105,15 +101,13 @@ const Inbox = () => {
                 style={{
                   fontFamily: "Arial, Helvetica, sans-serif",
                   fontSize: "13px",
-                  border: "2px solid black",
-                  borderRadius: "50px",
                   padding: "3px",
-                  marginLeft: "10px",
+                  ...(email.read ? {} : { marginLeft: "10px" }),
                 }}
-                className="btn btn-danger"
+                className="btn btn-outline-danger me-2"
                 onClick={() => deleteEmail(email.id)}
               >
-                🗑
+                🗑️
               </button>
             </ListGroup.Item>
           );

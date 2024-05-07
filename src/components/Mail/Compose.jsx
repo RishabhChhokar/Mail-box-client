@@ -20,6 +20,10 @@ const Compose = () => {
       alert("Please fill in all fields.");
       return;
     }
+    if(emailRef.current.value === senderEmail){
+      alert("You can't send to yourself");
+      return;
+    }
     const contentState = editorState.getCurrentContent();
     const rawContent = convertToRaw(contentState);
     const email = {
@@ -99,7 +103,7 @@ const Compose = () => {
           border-radius: 4px;
         }
         .editor-class {
-          min-height: 200px;
+          min-height: 150px;
           padding: 10px;
         }
         .send-button {

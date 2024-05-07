@@ -1,12 +1,33 @@
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { resetAuth } from "../../store/auth-slice";
-import UnreadEmails from "../Mail/UnreadEmails";
+import { resetAuth, updateUnreadEmails } from "../../store/auth-slice";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase/firebaseConfig";
 
 const MainNavigation = () => {
   const navigate = useNavigate();
   const isLogged = useSelector((state) => state.auth.isLogged);
+  const userEmail = useSelector((state) => state.auth.userEmail);
   const dispatch = useDispatch();
+  const unreadEmails = useSelector((state) => state.auth.unreadEmails);
+
+  useEffect(() => {
+    const fetchUnreadEmails = async () => {
+      if (!isLogged || !userEmail) return;
+
+      const q = query(
+        collection(db, userEmail + "_receivedEmails"),
+        where("to", "==", userEmail),
+        where("read", "==", false), 
+      );
+      const querySnapshot = await getDocs(q);
+      const count = querySnapshot.size;
+      dispatch(updateUnreadEmails(count));
+    };
+
+    fetchUnreadEmails();
+  }, [isLogged, userEmail, dispatch]);
 
   const logoutHandler = () => {
     dispatch(resetAuth());
@@ -14,14 +35,19 @@ const MainNavigation = () => {
   };
 
   return (
-    <nav className="navbar bg-light">
+    <nav
+      // style={{
+      //   backgroundImage: `url("/Images/email headers.jpg")`,
+      // }}
+      className="navbar bg-light"
+    >
       <div className="container-fluid">
         <Link
           style={{
             fontFamily: "Arial, Helvetica, sans-serif",
-            fontSize: "1.5rem",
+            fontSize: "1.1rem",
             color: "white",
-            margin: "0",
+            margin: "1px",
             padding: "5px",
             border: "2px solid black",
             borderRadius: "50px",
@@ -82,17 +108,26 @@ const MainNavigation = () => {
                   style={{
                     marginRight: "10px",
                     fontFamily: "Arial, Helvetica, sans-serif",
-                    border: "2px solid black",
-                    borderRadius: "50px",
+                    fontSize: "2.12rem",
+                    textDecoration: "none",
                   }}
                   to="/inbox"
                   type="button"
-                  className="btn btn-primary position-relative"
+                  className=" position-relative"
                 >
-                  Inbox
-                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    <UnreadEmails />
-                  </span>
+                  📧
+                  {unreadEmails > 0 && (
+                    <span
+                      style={{
+                        fontSize: "0.7rem",
+                        top: "2px",
+                        right: "-5px",
+                      }}
+                      className="position-absolute badge rounded-pill bg-danger"
+                    >
+                      {unreadEmails}
+                    </span>
+                  )}
                 </Link>
                 <Link
                   style={{

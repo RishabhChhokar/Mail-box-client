@@ -73,15 +73,12 @@ const SentBox = () => {
                 style={{
                   fontFamily: "Arial, Helvetica, sans-serif",
                   fontSize: "13px",
-                  border: "2px solid black",
-                  borderRadius: "50px",
                   padding: "3px",
-                  marginLeft: "10px",
                 }}
-                className="btn btn-danger"
+                className="btn btn-outline-danger me-2"
                 onClick={() => deleteEmail(email.id)}
               >
-                🗑
+                🗑️
               </button>
             </ListGroup.Item>
           );
