@@ -8,6 +8,8 @@ const initialState = {
   token: localStorage.getItem("userToken") || null,
   userEmail: localStorage.getItem("userEmail") || null,
   unreadEmails: parseInt(localStorage.getItem("unreadEmails")) || 0,
+  receivedEmails: JSON.parse(localStorage.getItem("receivedEmails")) || [],
+  sentEmails: JSON.parse(localStorage.getItem("sentEmails")) || [],
 };
 
 const authSlice = createSlice({
@@ -35,6 +37,14 @@ const authSlice = createSlice({
       state.isLogged = action.payload;
       localStorage.setItem("isLogged", action.payload);
     },
+    setReceivedEmails(state, action) {
+      state.receivedEmails = action.payload;
+      localStorage.setItem("receivedEmails", JSON.stringify(action.payload));
+    },
+    setSentEmails(state, action) {
+      state.sentEmails = action.payload;
+      localStorage.setItem("sentEmails", JSON.stringify(action.payload));
+    },
     resetAuth(state) {
       state.user = null;
       state.loading = false;
@@ -43,11 +53,12 @@ const authSlice = createSlice({
       state.token = null;
       state.userEmail = null;
       state.unreadEmails = 0;
-
       localStorage.removeItem("isLogged");
       localStorage.removeItem("userToken");
       localStorage.removeItem("userEmail");
       localStorage.removeItem("unreadEmails");
+      localStorage.removeItem("receivedEmails");
+      localStorage.removeItem("sentEmails");
     },
     updateUnreadEmails(state, action) {
       state.unreadEmails = action.payload;
@@ -64,5 +75,7 @@ export const {
   setLoggedStatus,
   resetAuth,
   updateUnreadEmails,
+  setReceivedEmails,
+  setSentEmails,
 } = authSlice.actions;
 export default authSlice.reducer;

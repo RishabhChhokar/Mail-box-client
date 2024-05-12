@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { db } from "../../firebase/firebaseConfig";
 import {
   collection,
   query,
-  where,
   onSnapshot,
   updateDoc,
   doc,
@@ -11,12 +10,11 @@ import {
 } from "firebase/firestore";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUnreadEmails } from "../../store/auth-slice";
-
+import { setReceivedEmails } from "../../store/auth-slice";
 export const useInbox = () => {
-  const [emails, setEmails] = useState([]);
   const userEmail = useSelector((state) => state.auth.userEmail);
+  const emails = useSelector((state)=>state.auth.receivedEmails)
   const dispatch = useDispatch();
-
   useEffect(() => {
     const unsubscribe = listenToInboxChanges();
 
@@ -28,7 +26,6 @@ export const useInbox = () => {
   const listenToInboxChanges = () => {
     const q = query(
       collection(db, userEmail + "_receivedEmails"),
-      where("to", "==", userEmail)
     );
 
     return onSnapshot(q, (snapshot) => {
@@ -36,8 +33,7 @@ export const useInbox = () => {
         ...doc.data(),
         id: doc.id,
       }));
-      setEmails(newEmails);
-
+      dispatch(setReceivedEmails(newEmails))
       const unreadCount = newEmails.filter((email) => !email.read).length;
       dispatch(updateUnreadEmails(unreadCount));
     });
@@ -53,5 +49,5 @@ export const useInbox = () => {
     await deleteDoc(emailRef);
   };
 
-  return { emails, markAsRead, deleteEmail };
+  return {emails, markAsRead, deleteEmail };
 };

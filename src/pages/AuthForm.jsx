@@ -1,13 +1,10 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch} from "react-redux";
-import useLogin from "../customHooks/AuthHooks/useLogin";
-import useSignUp from "../customHooks/AuthHooks/useSignUp";
-import {
-  clearError,
-  setError,
-} from "../store/auth-slice";
+import { useSelector, useDispatch } from "react-redux";
+import useLogin from "../customHooks/AuthHooks/use-login";
+import useSignUp from "../customHooks/AuthHooks/use-signup";
+import { clearError, setError } from "../store/auth-slice";
 const AuthForm = () => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
@@ -18,7 +15,7 @@ const AuthForm = () => {
   const error = useSelector((state) => state.auth.error);
   const { login } = useLogin();
   const { signup } = useSignUp();
-  const dispatch =  useDispatch()
+  const dispatch = useDispatch();
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
     dispatch(clearError());

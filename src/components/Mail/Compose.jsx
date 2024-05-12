@@ -3,25 +3,30 @@ import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useSelector } from "react-redux";
-import { db } from "../../firebase/firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
+import { useCompose } from "../../customHooks/MailHooks/use-compose"; 
 
 const Compose = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const emailRef = useRef(null);
   const subRef = useRef(null);
   const senderEmail = useSelector((state) => state.auth.userEmail);
+  const { sendEmail, isLoading, error } = useCompose();
+
   const onEditorStateChange = (newState) => {
     setEditorState(newState);
   };
 
-  const sendEmail = async () => {
-    if (!emailRef.current.value || !subRef.current.value) {
+  const handleSendEmail = async () => {
+    if (
+      !emailRef.current.value ||
+      !subRef.current.value ||
+      editorState.getCurrentContent().hasText() === false
+    ) {
       alert("Please fill in all fields.");
       return;
     }
-    if(emailRef.current.value === senderEmail){
-      alert("You can't send to yourself");
+    if (emailRef.current.value === senderEmail) {
+      alert("You can't send mail to yourself");
       return;
     }
     const contentState = editorState.getCurrentContent();
@@ -32,19 +37,13 @@ const Compose = () => {
       body: JSON.stringify(rawContent),
       sender: senderEmail,
       read: false,
-      date: new Date().getTime()
+      date: new Date().getTime(),
     };
 
-    try {
-      await addDoc(collection(db, senderEmail + "_sentEmails"), email);
-      await addDoc(collection(db, email.to + "_receivedEmails"), email);
-      console.log("Email sent successfully!");
-      emailRef.current.value = "";
-      subRef.current.value = "";
-      setEditorState(EditorState.createEmpty());
-    } catch (error) {
-      console.error("Error sending email: ", error);
-    }
+    await sendEmail(email);
+    emailRef.current.value = "";
+    subRef.current.value = "";
+    setEditorState(EditorState.createEmpty());
   };
 
   return (
@@ -75,10 +74,12 @@ const Compose = () => {
           borderRadius: "50px",
         }}
         className="send-button"
-        onClick={sendEmail}
+        onClick={handleSendEmail}
+        disabled={isLoading}
       >
-        Send
+        {isLoading ? "Sending..." : "Send"}
       </button>
+      {error && <div>Error: {error.message}</div>}
       <style>{`
         .compose-email {
           display: flex;

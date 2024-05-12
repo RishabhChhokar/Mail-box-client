@@ -18,7 +18,6 @@ const MainNavigation = () => {
 
       const q = query(
         collection(db, userEmail + "_receivedEmails"),
-        where("to", "==", userEmail),
         where("read", "==", false), 
       );
       const querySnapshot = await getDocs(q);
