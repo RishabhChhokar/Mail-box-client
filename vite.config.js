@@ -6,6 +6,7 @@ export default defineConfig({
   define: {
     global: "window",
   },
+  base : '/Mail-box-client/',
   test: {
     setupFiles: ["vitest-localstorage-mock"],
     mockReset: false,
